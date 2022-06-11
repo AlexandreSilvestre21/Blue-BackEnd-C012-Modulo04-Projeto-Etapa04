@@ -5,11 +5,12 @@ Adaptação de endpoints de Jogos e Gêneros para somente aceitar requisições 
 
 Autenticação das rotas necessárias que foram desenvolvidas nos projetos anteriores do módulo 04:
 
-[AUTH] [GET] Homepage
-[AUTH] [GET] Lista de jogos favoritos
-[AUTH] [GET] Lista de jogos classificados por gênero
-[AUTH] [CRUD] Perfis
-[AUTH] Favoritar jogo.
+- [AUTH] [GET] Homepage
+- [AUTH] [GET] Lista de jogos favoritos
+- [AUTH] [GET] Lista de jogos classificados por gênero
+- [AUTH] [CRUD] Perfis
+- [AUTH] Favoritar jogo.
+
 Deploy.
 
 Documentação de todo o projeto até o momento (Incluindo README.md).
