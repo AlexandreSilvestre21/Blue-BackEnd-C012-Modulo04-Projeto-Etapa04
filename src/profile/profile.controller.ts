@@ -12,48 +12,48 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from 'src/user/dto/create-user-dto';
-import { UpdateUserDto } from 'src/user/dto/update-user-dto';
-import { User } from 'src/user/entities/user.entity';
-import { UserService } from 'src/user/user.service';
+import { CreateProfileDto } from './dto/create-profile';
+import { UpdateProfileDto } from './dto/update-profile';
+import { Profile } from './entities/profile.entity';
+import { ProfileService } from './profile.service';
 
 @ApiTags('user')
 @UseGuards(AuthGuard())
 @ApiBearerAuth()
 @Controller('user')
 export class ProfileController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly profileService: ProfileService) {}
 
   @Get()
   @ApiOperation({
     summary: 'Listar todas os usuários',
   })
-  findAll(): Promise<User[]> {
-    return this.userService.findAll();
+  findAll(): Promise<Profile[]> {
+    return this.profileService.findAll();
   }
 
   @Get(':id')
   @ApiOperation({
     summary: 'Visualizar um usuário',
   })
-  findOne(@Param('id') id: string): Promise<User> {
-    return this.userService.findOne(id);
+  findOne(@Param('id') id: string): Promise<Profile> {
+    return this.profileService.findOne(id);
   }
 
   @Post()
   @ApiOperation({
     summary: 'Criar um usuário',
   })
-  create(@Body() dto: CreateUserDto): Promise<User> {
-    return this.userService.create(dto);
+  create(@Body() dto: CreateProfileDto): Promise<Profile> {
+    return this.profileService.create(dto);
   }
 
   @Patch(':id')
   @ApiOperation({
     summary: 'Editar uma usuário pelo ID',
   })
-  update(@Param('id') id: string, @Body() dto: UpdateUserDto): Promise<User> {
-    return this.userService.update(id, dto);
+  update(@Param('id') id: string, @Body() dto: UpdateProfileDto): Promise<Profile> {
+    return this.profileService.update(id, dto);
   }
 
   @Delete(':id')
@@ -62,7 +62,7 @@ export class ProfileController {
     summary: 'Remover um usuário pelo ID',
   })
   delete(@Param('id') id: string) {
-    this.userService.delete(id);
+    this.profileService.delete(id);
   }
 }
 
