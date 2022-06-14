@@ -8,53 +8,84 @@ import {
   import { UpdateProfileDto } from './dto/update-profile';
   import { PrismaService } from '../prisma/prisma.service';
   import { Profile } from './entities/profile.entity';
+  import { Prisma } from '@prisma/client';
 
   @Injectable()
   export class ProfileService {
     constructor(private readonly prisma: PrismaService) {}
+    private profileSelect = {
+      id: true,
+      title: true,
+      imageUrl: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    };
 
-    async create(dto: CreateProfileDto) {
-      const data: Profile = { ...dto };
+    async create(UserId:string, dto: CreateProfileDto) {
+      const data: Prisma.ProfileCreateInput = { ...dto, user:{connect: {id: UserId}} };
 
-      return this.prisma.profile.create({ data }).catch(this.handleError);
+      return this.prisma.profile.create({ data, select: this.profileSelect}).catch(this.handleError);
     }
 
-    async findAll() {
-      const list = await this.prisma.profile.findMany();
+    async findAll(userId: string) {
+      const list = await this.prisma.user.findUnique({
+        where: {id: userId},
+        select: {profiles:{select:{id:true, title:true, imageUrl:true}}}
+      });
 
-      if (list.length === 0) {
+      if (list.profiles.length === 0) {
         throw new NotFoundException('Não existem perfís cadastrados.');
       }
       return list;
     }
 
-    async findOne(id: string) {
-      const record = await this.prisma.profile.findUnique({ where: { id } });
+    async findOne(userId: string, profileId: string ) {
+      const profileUser = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          profiles: {
+            where: {
+              id: profileId,
+            },
+          },
+        },
+      });
+
+      if (profileUser.profiles.length === 0) {
+        throw new NotFoundException(
+          `Perfil com ID ${profileId} não encontrado na sua conta.`,
+        );
+      }
+      const record = await this.prisma.profile.findUnique({ where: { id:profileId }, include:{games:{select:{game: true}}} });
 
       if (!record) {
         throw new NotFoundException(
-          `O perfil com o Id: '${id}' não está cadastrado. `,
+          `O perfil com o Id: '${profileId}' não está cadastrado. `,
         );
       }
 
       return record;
     }
 
-    async update(id: string, dto: UpdateProfileDto) {
-      await this.findOne(id);
+    async update(userId: string, id: string, dto: UpdateProfileDto) {
+      await this.findOne(userId, id);
 
       const data: Partial<Profile> = { ...dto };
 
       return this.prisma.profile
         .update({
           where: { id },
-          data,
+          data, select:this.profileSelect,
         })
         .catch(this.handleError);
     }
 
-    async delete(id: string) {
-      await this.findOne(id);
+    async delete(userId: string, id: string) {
+      await this.findOne(userId, id);
 
       await this.prisma.profile.delete({
         where: { id },

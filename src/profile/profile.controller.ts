@@ -12,57 +12,59 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { LoggedUser } from 'src/auth/logged-user.decorator';
+import { User } from 'src/user/entities/user.entity';
 import { CreateProfileDto } from './dto/create-profile';
 import { UpdateProfileDto } from './dto/update-profile';
 import { Profile } from './entities/profile.entity';
 import { ProfileService } from './profile.service';
 
-@ApiTags('user')
+@ApiTags('profile')
 @UseGuards(AuthGuard())
 @ApiBearerAuth()
-@Controller('user')
+@Controller('profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
   @Get()
   @ApiOperation({
-    summary: 'Listar todas os usuários',
+    summary: 'Listar todas os perfís',
   })
-  findAll(): Promise<Profile[]> {
-    return this.profileService.findAll();
+  findAll(@LoggedUser() user: User)  {
+    return this.profileService.findAll(user.id);
   }
 
   @Get(':id')
   @ApiOperation({
-    summary: 'Visualizar um usuário',
+    summary: 'Visualizar um perfil pelo Id',
   })
-  findOne(@Param('id') id: string): Promise<Profile> {
-    return this.profileService.findOne(id);
+  findOne(@LoggedUser() user: User, @Param('id') id: string) {
+    return this.profileService.findOne(user.id, id);
   }
 
   @Post()
   @ApiOperation({
-    summary: 'Criar um usuário',
+    summary: 'Criar um perfil',
   })
-  create(@Body() dto: CreateProfileDto): Promise<Profile> {
-    return this.profileService.create(dto);
+  create(@LoggedUser() user: User, @Body() dto: CreateProfileDto) {
+    return this.profileService.create(user.id, dto);
   }
 
   @Patch(':id')
   @ApiOperation({
-    summary: 'Editar uma usuário pelo ID',
+    summary: 'Editar um perfil pelo ID',
   })
-  update(@Param('id') id: string, @Body() dto: UpdateProfileDto): Promise<Profile> {
-    return this.profileService.update(id, dto);
+  update(@LoggedUser() user: User, @Param('id') id: string, @Body() dto: UpdateProfileDto){
+    return this.profileService.update(user.id, id, dto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
-    summary: 'Remover um usuário pelo ID',
+    summary: 'Remover um perfil pelo ID',
   })
-  delete(@Param('id') id: string) {
-    this.profileService.delete(id);
+  delete(@LoggedUser() user: User, @Param('id') id: string) {
+    this.profileService.delete(user.id, id);
   }
 }
 

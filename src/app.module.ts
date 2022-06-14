@@ -7,6 +7,8 @@ import { GameModule } from './game/game.module';
 import { GenderModule } from './gender/gender.module';
 import { ProfileModule } from './profile/profile.module';
 import { ProfileGameModule } from './profile-games/profile-games.module';
+import { AuthModule } from './auth/auth.module';
+
 
 @Module({
   imports: [
@@ -16,6 +18,7 @@ import { ProfileGameModule } from './profile-games/profile-games.module';
     GenderModule,
     ProfileModule,
     ProfileGameModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

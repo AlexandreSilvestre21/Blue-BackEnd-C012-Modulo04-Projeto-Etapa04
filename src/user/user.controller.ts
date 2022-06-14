@@ -15,6 +15,8 @@ import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { UserIsAdmin } from 'src/auth/user-is-admin.decorator';
+import { User } from './entities/user.entity';
 
 @ApiTags('user')
 @Controller('user')
@@ -35,7 +37,7 @@ export class UserController {
   })
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
-  findAll() {
+  findAll(@UserIsAdmin () user: User) {
     return this.userService.findAll();
   }
 

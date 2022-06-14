@@ -15,6 +15,8 @@ import { CreateGenderDto } from 'src/gender/dto/create-gender.dto';
 import { UpdateGenderDto } from 'src/gender/dto/update-gender.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { UserIsAdmin } from 'src/auth/user-is-admin.decorator';
+import { User } from 'src/user/entities/user.entity';
 
 @ApiTags('gender')
 @UseGuards(AuthGuard())
@@ -27,7 +29,7 @@ export class GenderController {
   @ApiOperation({
     summary: 'Criar um game',
   })
-  create(@Body() createGenderDto: CreateGenderDto) {
+  create(@UserIsAdmin () user: User, @Body() createGenderDto: CreateGenderDto) {
     return this.genderService.create(createGenderDto);
   }
 
@@ -51,7 +53,7 @@ export class GenderController {
   @ApiOperation({
     summary: 'Editar um game pelo ID',
   })
-  update(@Param('id') id: string, @Body() updateGenderDto: UpdateGenderDto) {
+  update(@UserIsAdmin () user: User, @Param('id') id: string, @Body() updateGenderDto: UpdateGenderDto) {
     return this.genderService.update(id, updateGenderDto);
   }
 
@@ -60,7 +62,7 @@ export class GenderController {
   @ApiOperation({
     summary: 'Remover um game pelo ID',
   })
-  delete(@Param('id') id: string) {
+  delete(@UserIsAdmin () user: User, @Param('id') id: string) {
     this.genderService.delete(id);
   }
 }
