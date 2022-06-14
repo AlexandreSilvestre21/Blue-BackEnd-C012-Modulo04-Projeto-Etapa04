@@ -10,25 +10,25 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import { GameService } from 'src/game/game.service';
-import { CreateGameDto } from 'src/game/dto/create-game.dto';
-import { UpdateGameDto } from 'src/game/dto/update-game.dto';
+import { GenderService } from 'src/gender/gender.service';
+import { CreateGenderDto } from 'src/gender/dto/create-gender.dto';
+import { UpdateGenderDto } from 'src/gender/dto/update-gender.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
-@ApiTags('game')
+@ApiTags('gender')
 @UseGuards(AuthGuard())
 @ApiBearerAuth()
-@Controller('game')
-export class GameController {
-  constructor(private readonly gameService: GameService) {}
+@Controller('gender')
+export class GenderController {
+  constructor(private readonly genderService: GenderService) {}
 
   @Post()
   @ApiOperation({
     summary: 'Criar um game',
   })
-  create(@Body() createGameDto: CreateGameDto) {
-    return this.gameService.create(createGameDto);
+  create(@Body() createGenderDto: CreateGenderDto) {
+    return this.genderService.create(createGenderDto);
   }
 
   @Get()
@@ -36,7 +36,7 @@ export class GameController {
     summary: 'Listar todos os games',
   })
   findAll() {
-    return this.gameService.findAll();
+    return this.genderService.findAll();
   }
 
   @Get(':id')
@@ -44,15 +44,15 @@ export class GameController {
     summary: 'Visualizar um game pelo ID',
   })
   findOne(@Param('id') id: string) {
-    return this.gameService.findOne(id);
+    return this.genderService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({
     summary: 'Editar um game pelo ID',
   })
-  update(@Param('id') id: string, @Body() updateGameDto: UpdateGameDto) {
-    return this.gameService.update(id, updateGameDto);
+  update(@Param('id') id: string, @Body() updateGenderDto: UpdateGenderDto) {
+    return this.genderService.update(id, updateGenderDto);
   }
 
   @Delete(':id')
@@ -61,6 +61,6 @@ export class GameController {
     summary: 'Remover um game pelo ID',
   })
   delete(@Param('id') id: string) {
-    this.gameService.delete(id);
+    this.genderService.delete(id);
   }
 }

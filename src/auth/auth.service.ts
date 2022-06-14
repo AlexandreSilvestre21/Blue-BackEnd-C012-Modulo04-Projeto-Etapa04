@@ -2,8 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { LoginResponseDto } from 'src/game/dto/login-response.dto';
-import { LoginDto } from 'src/game/dto/login-dto';
+import { LoginResponseDto } from './dto/login-response.dto';
+import { LoginDto } from './dto/login.dto';
+
 
 @Injectable()
 export class AuthService {
@@ -13,16 +14,15 @@ export class AuthService {
   ) {}
 
   async login(loginDto: LoginDto): Promise<LoginResponseDto> {
-    const { nickname, password } = loginDto;
+    const { email, password } = loginDto;
 
-    // Procura e checa se o user existe, usando o nickname
-    const user = await this.prisma.user.findUnique({ where: { nickname } });
+        const user = await this.prisma.user.findUnique({ where: { email } });
 
     if (!user) {
       throw new UnauthorizedException('Usuário e/ou senha inválidos');
     }
 
-    // Valida se a senha informada é correta
+
     const isHashValid = await bcrypt.compare(password, user.password);
 
     if (!isHashValid) {
@@ -32,7 +32,7 @@ export class AuthService {
     delete user.password;
 
     return {
-      token: this.jwtService.sign({ nickname }),
+      token: this.jwtService.sign({ email }),
       user,
     };
   }

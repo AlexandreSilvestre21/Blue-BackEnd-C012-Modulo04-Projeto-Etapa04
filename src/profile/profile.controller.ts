@@ -21,7 +21,7 @@ import { UserService } from 'src/user/user.service';
 @UseGuards(AuthGuard())
 @ApiBearerAuth()
 @Controller('user')
-export class UserController {
+export class ProfileController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
@@ -65,3 +65,5 @@ export class UserController {
     this.userService.delete(id);
   }
 }
+
+

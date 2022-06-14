@@ -10,8 +10,8 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { LoginResponseDto } from 'src/game/dto/login-response.dto';
-import { LoginDto } from 'src/game/dto/login-dto';
+import { LoginResponseDto } from './dto/login-response.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 @ApiTags('auth')
